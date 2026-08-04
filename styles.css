@@ -1086,23 +1086,12 @@ textarea { resize: vertical; }
 }
 
 
-/* Tablet/mobile: keep Space and Date columns exactly equal width. */
-@media (max-width: 1300px) {
+
+
+
+/* Restore the original mobile Add Something layout: one field per row. */
+@media (max-width: 760px) {
   .form-row {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
-  }
-
-  .form-row > label {
-    min-width: 0 !important;
-    width: 100% !important;
-  }
-
-  #itemSpace,
-  #itemDate {
-    display: block;
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
+    grid-template-columns: 1fr !important;
   }
 }
