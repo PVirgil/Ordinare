@@ -1081,11 +1081,3 @@ textarea { resize: vertical; }
     -webkit-overflow-scrolling: touch;
   }
 }
-
-
-/* Modal stacking fix */
-.overlay{z-index:1000!important;}
-.command-panel{z-index:1200!important;}
-.modal{z-index:1200!important;}
-.sidebar{z-index:1100!important;}
-.toast{z-index:1300!important;}
