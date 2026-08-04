@@ -1069,7 +1069,7 @@ textarea { resize: vertical; }
   .form-row select,
   .modal select,
   .inline-person-form select {
-    min-height: 46px;
+    min-height: 46px; !important
   }
 
   .sidebar {
