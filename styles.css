@@ -1057,10 +1057,30 @@ textarea { resize: vertical; }
 
 
 
-/* Tablet: Space uses the same box model as Date; exact rendered height is synced in JS. */
+
+
+
+/* Tablet/mobile Add Something sizing + caret colors */
 @media (max-width: 1300px) {
-  #itemSpace {
-    padding: 11px 12px !important;
+  #itemSpace,
+  #itemDate {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
     box-sizing: border-box;
+  }
+
+  input,
+  textarea,
+  select,
+  .command-head input {
+    caret-color: #000000 !important;
+  }
+
+  body.dark input,
+  body.dark textarea,
+  body.dark select,
+  body.dark .command-head input {
+    caret-color: #ffffff !important;
   }
 }
