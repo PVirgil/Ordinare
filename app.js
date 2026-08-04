@@ -597,7 +597,14 @@ document.querySelectorAll(".nav-item[data-view], .brand").forEach(btn => {
       people: renderPeople,
       goals: renderGoals
     }[view];
-    fn?.();
+    if (fn) {
+      fn();
+      els.sidebar.classList.remove("open");
+      document.body.classList.remove("sidebar-open");
+      if (els.commandPanel.classList.contains("hidden") && els.itemModal.classList.contains("hidden")) {
+        els.overlay.classList.add("hidden");
+      }
+    }
   });
 });
 
