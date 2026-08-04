@@ -576,6 +576,26 @@ function interpretCommand(raw) {
 }
 
 
+
+function syncDateWidthToSpace() {
+  const space = document.getElementById("itemSpace");
+  const date = document.getElementById("itemDate");
+  if (!space || !date) return;
+
+  if (window.matchMedia("(max-width: 1300px)").matches) {
+    const spaceWidth = space.getBoundingClientRect().width;
+    if (spaceWidth > 0) {
+      date.style.width = `${spaceWidth}px`;
+      date.style.maxWidth = `${spaceWidth}px`;
+      date.style.minWidth = `${spaceWidth}px`;
+    }
+  } else {
+    date.style.width = "";
+    date.style.maxWidth = "";
+    date.style.minWidth = "";
+  }
+}
+
 function syncSpaceHeightToDate() {
   const space = document.getElementById("itemSpace");
   const date = document.getElementById("itemDate");
@@ -600,9 +620,10 @@ function openItemModal(type = "task") {
   els.itemForm.reset();
   els.itemDate.value = "";
   updateTypeChips();
-  requestAnimationFrame(syncSpaceHeightToDate);
+  requestAnimationFrame(() => { syncSpaceHeightToDate(); syncDateWidthToSpace(); });
   setTimeout(() => {
     syncSpaceHeightToDate();
+    syncDateWidthToSpace();
     els.itemTitle.focus();
   }, 30);
 }
@@ -774,3 +795,5 @@ updateNavCounts();
 renderToday();
 
 window.addEventListener("resize", syncSpaceHeightToDate);
+
+window.addEventListener("resize", syncDateWidthToSpace);
