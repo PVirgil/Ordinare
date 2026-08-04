@@ -112,7 +112,10 @@ function setView(title, eyebrow = "ORGANIZE") {
   document.querySelectorAll(".nav-item[data-view]").forEach(btn => {
     btn.classList.toggle("active", btn.dataset.view === currentView);
   });
-  if (window.innerWidth <= 760) els.sidebar.classList.remove("open");
+  if (window.innerWidth <= 760) {
+    els.sidebar.classList.remove("open");
+    document.body.classList.remove("sidebar-open");
+  }
 }
 
 function itemRow(item) {
@@ -444,7 +447,10 @@ function renderSpace(spaceId) {
   els.viewEyebrow.textContent = "SPACE";
   document.querySelectorAll(".nav-item[data-view]").forEach(btn => btn.classList.remove("active"));
   renderCollection(space.name, `Everything connected to your ${space.name.toLowerCase()} space.`, state.items.filter(i => i.space === spaceId));
-  if (window.innerWidth <= 760) els.sidebar.classList.remove("open");
+  if (window.innerWidth <= 760) {
+    els.sidebar.classList.remove("open");
+    document.body.classList.remove("sidebar-open");
+  }
 }
 
 function emptyState(title, text) {
@@ -605,6 +611,7 @@ els.overlay.addEventListener("click", () => {
   closeCommand();
   closeItemModal();
   els.sidebar.classList.remove("open");
+  document.body.classList.remove("sidebar-open");
 });
 
 els.typeGrid.querySelectorAll("[data-type]").forEach(btn => {
@@ -646,11 +653,13 @@ document.querySelectorAll("[data-suggestion]").forEach(btn => {
 
 document.getElementById("menuBtn").addEventListener("click", () => {
   els.sidebar.classList.add("open");
+  document.body.classList.add("sidebar-open");
   els.overlay.classList.remove("hidden");
 });
 
 document.getElementById("closeSidebar").addEventListener("click", () => {
   els.sidebar.classList.remove("open");
+  document.body.classList.remove("sidebar-open");
   els.overlay.classList.add("hidden");
 });
 
@@ -696,6 +705,7 @@ document.addEventListener("keydown", e => {
     closeCommand();
     closeItemModal();
     els.sidebar.classList.remove("open");
+    document.body.classList.remove("sidebar-open");
   }
 });
 
