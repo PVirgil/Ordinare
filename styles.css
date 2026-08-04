@@ -1054,13 +1054,13 @@ textarea { resize: vertical; }
 }
 
 
-/* Tablet: make the Space closed select box match the Date box. */
+
+
+
+/* Tablet: Space uses the same box model as Date; exact rendered height is synced in JS. */
 @media (max-width: 1300px) {
   #itemSpace {
-    min-height: 0 !important;
-    height: auto !important;
-    padding: 10px 11px !important;
-    line-height: normal !important;
+    padding: 11px 12px !important;
     box-sizing: border-box;
   }
 }
