@@ -975,26 +975,7 @@ textarea { resize: vertical; }
 
 
 /* Mobile/tablet search focus fix */
-@media (max-width: 1300px) {
-  .command-head input,
-  .command-head input:focus,
-  .command-head input:focus-visible {
-    -webkit-appearance: none;
-    appearance: none;
-    outline: none !important;
-    border: 0 !important;
-    box-shadow: none !important;
-    -webkit-tap-highlight-color: transparent;
-    caret-color: var(--text);
-  }
 
-  .search-btn,
-  .search-btn:focus,
-  .search-btn:focus-visible {
-    outline: none;
-    -webkit-tap-highlight-color: transparent;
-  }
-}
 
 
 @media (max-width: 760px) {
@@ -1042,49 +1023,37 @@ textarea { resize: vertical; }
 
 
 /* Tablet and mobile form-control fixes */
+
+
+
+
+
+
+/* Tablet: ONLY keep the closed select control from being vertically crushed. */
 @media (max-width: 1300px) {
-  input,
-  textarea,
-  select,
-  .command-head input {
-    caret-color: #000000;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  body.dark input,
-  body.dark textarea,
-  body.dark select,
-  body.dark .command-head input {
-    caret-color: #ffffff;
-  }
-
   select {
-    min-height: 46px;
-    height: auto;
-    line-height: 1.25;
-    padding-top: 11px;
-    padding-bottom: 11px;
+    min-height: 56px !important;
+  }
+}
+
+/* Mobile modal interaction fix.
+   The overlay stays behind Search/Add, has no blur/dark tint,
+   and can still be tapped outside a modal to close it. */
+@media (max-width: 760px) {
+  .overlay {
+    z-index: 1000 !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 
-  .form-row select,
-  .modal select,
-  .inline-person-form select {
-    min-height: 46px;
+  .command-panel,
+  .modal {
+    z-index: 1002 !important;
+    pointer-events: auto;
   }
 
   .sidebar {
-    min-height: 100vh;
-    min-height: 100dvh;
-    height: 100vh;
-    height: 100dvh;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    z-index: 1001 !important;
   }
 }
-
-@media (max-width: 1300px) {
-  select {
-    min-height: 30px;
-  }
-}
-@media (max-width:760px){.overlay{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(0,0,0,.18)!important;}}
