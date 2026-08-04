@@ -8,59 +8,7 @@ const seed = {
     { id: "home", name: "Home", color: "#059669" },
     { id: "finance", name: "Finance", color: "#d97706" }
   ],
-  items: [
-    {
-      id: crypto.randomUUID(),
-      type: "task",
-      title: "Finish website proposal",
-      details: "Review scope, pricing, and final mockups.",
-      space: "work",
-      date: new Date().toISOString().slice(0, 10),
-      done: false,
-      createdAt: Date.now() - 50000
-    },
-    {
-      id: crypto.randomUUID(),
-      type: "event",
-      title: "Dentist appointment",
-      details: "2:30 PM · Downtown Dental",
-      space: "personal",
-      date: addDays(2),
-      done: false,
-      createdAt: Date.now() - 40000
-    },
-    {
-      id: crypto.randomUUID(),
-      type: "task",
-      title: "Pay electric bill",
-      details: "$126 due this week",
-      space: "finance",
-      date: addDays(4),
-      done: false,
-      createdAt: Date.now() - 30000
-    },
-    {
-      id: crypto.randomUUID(),
-      type: "project",
-      title: "Japan trip",
-      details: "Flights booked. Build itinerary and reserve hotels.",
-      space: "personal",
-      date: addDays(45),
-      done: false,
-      progress: 72,
-      createdAt: Date.now() - 20000
-    },
-    {
-      id: crypto.randomUUID(),
-      type: "note",
-      title: "Kitchen renovation ideas",
-      details: "Warm wood, hidden outlets, under-cabinet lighting.",
-      space: "home",
-      date: "",
-      done: false,
-      createdAt: Date.now() - 10000
-    }
-  ]
+  items: []
 };
 
 let state = loadState();
