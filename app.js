@@ -513,18 +513,8 @@ function renderCurrent() {
   }[currentView] || renderToday)();
 }
 
-
-function showOverlay(){ showOverlay(); }
-function hideOverlay(){
-  if(els.commandPanel.classList.contains("hidden") &&
-     els.itemModal.classList.contains("hidden") &&
-     !els.sidebar.classList.contains("open")){
-    els.overlay.classList.add("hidden");
-  }
-}
-
 function openCommand() {
-  showOverlay();
+  els.overlay.classList.remove("hidden");
   els.commandPanel.classList.remove("hidden");
   els.commandInput.value = "";
   setTimeout(() => els.commandInput.focus(), 30);
@@ -532,7 +522,7 @@ function openCommand() {
 
 function closeCommand() {
   els.commandPanel.classList.add("hidden");
-  hideOverlay();
+  if (els.itemModal.classList.contains("hidden")) els.overlay.classList.add("hidden");
 }
 
 function interpretCommand(raw) {
@@ -587,7 +577,7 @@ function interpretCommand(raw) {
 
 function openItemModal(type = "task") {
   selectedType = type;
-  showOverlay();
+  els.overlay.classList.remove("hidden");
   els.itemModal.classList.remove("hidden");
   els.itemForm.reset();
   els.itemDate.value = "";
@@ -597,7 +587,7 @@ function openItemModal(type = "task") {
 
 function closeItemModal() {
   els.itemModal.classList.add("hidden");
-  hideOverlay();
+  if (els.commandPanel.classList.contains("hidden")) els.overlay.classList.add("hidden");
 }
 
 function updateTypeChips() {
@@ -642,11 +632,10 @@ document.getElementById("closeCommand").addEventListener("click", closeCommand);
 document.getElementById("closeItemModal").addEventListener("click", closeItemModal);
 document.getElementById("cancelItem").addEventListener("click", closeItemModal);
 
-els.overlay.addEventListener("click",()=>{
- closeCommand();
- closeItemModal();
- if(typeof closeSidebarAfterNavigation==="function"){closeSidebarAfterNavigation();}
- hideOverlay();
+els.overlay.addEventListener("click", () => {
+  closeCommand();
+  closeItemModal();
+  closeSidebarAfterNavigation();
 });
 
 els.typeGrid.querySelectorAll("[data-type]").forEach(btn => {
@@ -689,7 +678,7 @@ document.querySelectorAll("[data-suggestion]").forEach(btn => {
 document.getElementById("menuBtn").addEventListener("click", () => {
   els.sidebar.classList.add("open");
   document.body.classList.add("sidebar-open");
-  showOverlay();
+  els.overlay.classList.remove("hidden");
 });
 
 document.getElementById("closeSidebar").addEventListener("click", event => {
