@@ -1,8 +1,3 @@
-html,
-:root {
-    color-scheme: only light;
-}
-
 :root {
   --bg: #f5f7fb;
   --panel: #ffffff;
@@ -1098,5 +1093,47 @@ textarea { resize: vertical; }
 @media (max-width: 760px) {
   .form-row {
     grid-template-columns: 1fr !important;
+  }
+}
+
+
+/* Tablet/mobile layout fixes: keep Add Something controls equal-width and
+   make the navigation panel fill the visible device viewport. */
+@media (max-width: 1300px) {
+  .form-row > label {
+    min-width: 0;
+    width: 100%;
+  }
+
+  #itemSpace,
+  #itemDate {
+    display: block;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* iOS/WebKit date inputs can otherwise retain an intrinsic minimum width. */
+  #itemDate {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .sidebar {
+    height: 100vh;
+    height: 100dvh;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+}
+
+@media (max-width: 760px) {
+  .sidebar {
+    top: 0;
+    bottom: 0;
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
   }
 }
