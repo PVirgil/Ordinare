@@ -1029,12 +1029,7 @@ textarea { resize: vertical; }
 
 
 
-/* Tablet: ONLY keep the closed select control from being vertically crushed. */
-@media (max-width: 1300px) {
-  select {
-    min-height: 56px !important;
-  }
-}
+
 
 /* Mobile modal interaction fix.
    The overlay stays behind Search/Add, has no blur/dark tint,
@@ -1055,5 +1050,17 @@ textarea { resize: vertical; }
 
   .sidebar {
     z-index: 1001 !important;
+  }
+}
+
+
+/* Tablet: make the Space closed select box match the Date box. */
+@media (max-width: 1300px) {
+  #itemSpace {
+    min-height: 0 !important;
+    height: auto !important;
+    padding: 10px 11px !important;
+    line-height: normal !important;
+    box-sizing: border-box;
   }
 }
