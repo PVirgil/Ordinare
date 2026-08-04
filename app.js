@@ -97,7 +97,12 @@ function renderSpaces() {
   `;
 
   document.querySelectorAll("[data-space]").forEach(btn => {
-    btn.addEventListener("click", () => renderSpace(btn.dataset.space));
+    btn.addEventListener("click", event => {
+      event.preventDefault();
+      event.stopPropagation();
+      renderSpace(btn.dataset.space);
+      closeSidebarAfterNavigation();
+    });
   });
 }
 
@@ -482,6 +487,19 @@ function bindItemActions() {
   });
 }
 
+
+function closeSidebarAfterNavigation() {
+  els.sidebar.classList.remove("open");
+  document.body.classList.remove("sidebar-open");
+
+  if (
+    els.commandPanel.classList.contains("hidden") &&
+    els.itemModal.classList.contains("hidden")
+  ) {
+    els.overlay.classList.add("hidden");
+  }
+}
+
 function renderCurrent() {
   if (currentView.startsWith("space:")) return renderSpace(currentView.split(":")[1]);
   ({
@@ -586,7 +604,10 @@ function showToast(message) {
 }
 
 document.querySelectorAll(".nav-item[data-view], .brand").forEach(btn => {
-  btn.addEventListener("click", () => {
+  btn.addEventListener("click", event => {
+    event.preventDefault();
+    event.stopPropagation();
+
     const view = btn.dataset.view || "today";
     const fn = {
       today: renderToday,
@@ -597,13 +618,10 @@ document.querySelectorAll(".nav-item[data-view], .brand").forEach(btn => {
       people: renderPeople,
       goals: renderGoals
     }[view];
+
     if (fn) {
       fn();
-      els.sidebar.classList.remove("open");
-      document.body.classList.remove("sidebar-open");
-      if (els.commandPanel.classList.contains("hidden") && els.itemModal.classList.contains("hidden")) {
-        els.overlay.classList.add("hidden");
-      }
+      closeSidebarAfterNavigation();
     }
   });
 });
@@ -617,8 +635,7 @@ document.getElementById("cancelItem").addEventListener("click", closeItemModal);
 els.overlay.addEventListener("click", () => {
   closeCommand();
   closeItemModal();
-  els.sidebar.classList.remove("open");
-  document.body.classList.remove("sidebar-open");
+  closeSidebarAfterNavigation();
 });
 
 els.typeGrid.querySelectorAll("[data-type]").forEach(btn => {
@@ -664,10 +681,10 @@ document.getElementById("menuBtn").addEventListener("click", () => {
   els.overlay.classList.remove("hidden");
 });
 
-document.getElementById("closeSidebar").addEventListener("click", () => {
-  els.sidebar.classList.remove("open");
-  document.body.classList.remove("sidebar-open");
-  els.overlay.classList.add("hidden");
+document.getElementById("closeSidebar").addEventListener("click", event => {
+  event.preventDefault();
+  event.stopPropagation();
+  closeSidebarAfterNavigation();
 });
 
 document.getElementById("themeBtn").addEventListener("click", () => {
