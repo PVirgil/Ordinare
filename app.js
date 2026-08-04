@@ -8,7 +8,8 @@ const seed = {
     { id: "home", name: "Home", color: "#059669" },
     { id: "finance", name: "Finance", color: "#d97706" }
   ],
-  items: []
+  items: [],
+  people: []
 };
 
 let state = loadState();
@@ -44,9 +45,13 @@ function addDays(n) {
 function loadState() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : structuredClone(seed);
+    const loaded = saved ? JSON.parse(saved) : structuredClone(seed);
+    if (!Array.isArray(loaded.people)) loaded.people = [];
+    return loaded;
   } catch {
-    return structuredClone(seed);
+    const fresh = structuredClone(seed);
+    fresh.people = [];
+    return fresh;
   }
 }
 
@@ -273,14 +278,139 @@ function renderCalendar() {
 function renderPeople() {
   currentView = "people";
   setView("People", "RELATIONSHIPS");
+
+  const people = state.people || [];
   els.content.innerHTML = `
     <section class="panel">
-      <div class="empty-state">
-        <strong>People becomes your lightweight relationship layer</strong>
-        Link people to meetings, notes, projects, birthdays, and follow-ups. This MVP includes the interface shell; a production version can add dedicated contact records and sync.
+      <div class="panel-head">
+        <div>
+          <h3>People</h3>
+          <p>Keep names, contact information, relationships, and notes together.</p>
+        </div>
+        <button class="primary-btn" id="addPersonBtn">＋ Add person</button>
+      </div>
+
+      <div class="people-grid">
+        ${people.length ? people.map(person => `
+          <article class="person-card" data-person-id="${person.id}">
+            <div class="person-top">
+              <div class="person-avatar">${escapeHtml(getInitials(person.name))}</div>
+              <div class="person-heading">
+                <h3>${escapeHtml(person.name)}</h3>
+                <span class="badge type-badge">${escapeHtml(person.relationship || "Contact")}</span>
+              </div>
+              <button class="delete-btn person-delete" data-person-action="delete" aria-label="Delete person">✕</button>
+            </div>
+            <div class="person-details">
+              ${person.phone ? `<div><span>Phone</span><a href="tel:${escapeHtml(person.phone)}">${escapeHtml(person.phone)}</a></div>` : ""}
+              ${person.email ? `<div><span>Email</span><a href="mailto:${escapeHtml(person.email)}">${escapeHtml(person.email)}</a></div>` : ""}
+              ${person.notes ? `<div class="person-notes"><span>Notes</span><p>${escapeHtml(person.notes)}</p></div>` : ""}
+            </div>
+          </article>
+        `).join("") : `
+          <div class="empty-state people-empty">
+            <strong>No people added yet</strong>
+            Add family, friends, coworkers, clients, or anyone else you want to remember.
+          </div>
+        `}
       </div>
     </section>
+
+    <div class="inline-person-form hidden" id="personFormWrap">
+      <form id="personForm">
+        <div class="modal-head">
+          <div>
+            <p class="eyebrow">NEW CONTACT</p>
+            <h2>Add a person</h2>
+          </div>
+          <button type="button" class="icon-btn" id="closePersonForm" aria-label="Close">×</button>
+        </div>
+
+        <label>
+          Name
+          <input id="personName" required placeholder="e.g. Jordan Smith" />
+        </label>
+
+        <div class="form-row">
+          <label>
+            Phone
+            <input id="personPhone" type="tel" placeholder="(555) 123-4567" />
+          </label>
+          <label>
+            Email
+            <input id="personEmail" type="email" placeholder="jordan@example.com" />
+          </label>
+        </div>
+
+        <label>
+          Relationship
+          <input id="personRelationship" placeholder="Friend, sibling, coworker, client..." />
+        </label>
+
+        <label>
+          Notes
+          <textarea id="personNotes" rows="3" placeholder="Birthday, how you met, things to remember..."></textarea>
+        </label>
+
+        <div class="modal-actions">
+          <button type="button" class="secondary-btn" id="cancelPerson">Cancel</button>
+          <button type="submit" class="primary-btn">Save person</button>
+        </div>
+      </form>
+    </div>
   `;
+
+  const wrap = document.getElementById("personFormWrap");
+  const openForm = () => {
+    wrap.classList.remove("hidden");
+    setTimeout(() => document.getElementById("personName")?.focus(), 30);
+  };
+  const closeForm = () => wrap.classList.add("hidden");
+
+  document.getElementById("addPersonBtn")?.addEventListener("click", openForm);
+  document.getElementById("closePersonForm")?.addEventListener("click", closeForm);
+  document.getElementById("cancelPerson")?.addEventListener("click", closeForm);
+
+  document.getElementById("personForm")?.addEventListener("submit", e => {
+    e.preventDefault();
+    const name = document.getElementById("personName").value.trim();
+    if (!name) return;
+
+    state.people.unshift({
+      id: crypto.randomUUID(),
+      name,
+      phone: document.getElementById("personPhone").value.trim(),
+      email: document.getElementById("personEmail").value.trim(),
+      relationship: document.getElementById("personRelationship").value.trim(),
+      notes: document.getElementById("personNotes").value.trim(),
+      createdAt: Date.now()
+    });
+
+    saveState();
+    renderPeople();
+    showToast("Person added");
+  });
+
+  document.querySelectorAll("[data-person-action='delete']").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const card = btn.closest("[data-person-id]");
+      if (!card) return;
+      state.people = state.people.filter(person => person.id !== card.dataset.personId);
+      saveState();
+      renderPeople();
+      showToast("Person removed");
+    });
+  });
+}
+
+function getInitials(name = "") {
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map(part => part[0] || "")
+    .join("")
+    .toUpperCase() || "?";
 }
 
 function renderGoals() {
