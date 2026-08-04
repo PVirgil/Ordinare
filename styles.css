@@ -1,3 +1,8 @@
+html,
+:root {
+    color-scheme: only light;
+}
+
 :root {
   --bg: #f5f7fb;
   --panel: #ffffff;
