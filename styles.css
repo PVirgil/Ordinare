@@ -1069,7 +1069,7 @@ textarea { resize: vertical; }
   .form-row select,
   .modal select,
   .inline-person-form select {
-    min-height: 100px; !important
+    min-height: 46px;
   }
 
   .sidebar {
@@ -1081,3 +1081,18 @@ textarea { resize: vertical; }
     -webkit-overflow-scrolling: touch;
   }
 }
+
+@media (max-width: 1300px) {
+  select {
+    min-height: 56px;
+    height: 56px;
+    line-height: normal;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+}
+@media (max-width:760px){.overlay{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(0,0,0,.18)!important;}}
