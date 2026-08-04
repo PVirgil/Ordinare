@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#111827" />
+  <meta name="description" content="Everything OS — a personal command center for tasks, notes, projects, events, and saved items." />
+  <title>Everything OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-row">
+        <button class="brand" data-view="today" aria-label="Go to Today">
+          <span class="brand-mark">E</span>
+          <span class="brand-copy">
+            <strong>Everything OS</strong>
+            <small>Personal command center</small>
+          </span>
+        </button>
+        <button class="icon-btn sidebar-close" id="closeSidebar" aria-label="Close navigation">×</button>
+      </div>
+
+      <button class="new-item-btn" id="newItemBtn">
+        <span>＋</span>
+        New item
+        <kbd>N</kbd>
+      </button>
+
+      <nav class="main-nav" aria-label="Primary navigation">
+        <button class="nav-item active" data-view="today">
+          <span class="nav-icon">◉</span><span>Today</span>
+        </button>
+        <button class="nav-item" data-view="inbox">
+          <span class="nav-icon">⌄</span><span>Inbox</span>
+          <span class="count-pill" id="inboxCount">0</span>
+        </button>
+        <button class="nav-item" data-view="projects">
+          <span class="nav-icon">▣</span><span>Projects</span>
+        </button>
+        <button class="nav-item" data-view="calendar">
+          <span class="nav-icon">□</span><span>Calendar</span>
+        </button>
+        <button class="nav-item" data-view="library">
+          <span class="nav-icon">◇</span><span>Library</span>
+        </button>
+        <button class="nav-item" data-view="people">
+          <span class="nav-icon">◎</span><span>People</span>
+        </button>
+        <button class="nav-item" data-view="goals">
+          <span class="nav-icon">△</span><span>Goals</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-section">
+        <div class="section-label-row">
+          <span>Spaces</span>
+          <button class="tiny-btn" id="addSpaceBtn" aria-label="Add space">＋</button>
+        </div>
+        <div id="spacesList" class="spaces-list"></div>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="nav-item" id="settingsBtn">
+          <span class="nav-icon">⚙</span><span>Settings</span>
+        </button>
+        <div class="profile-card">
+          <div class="avatar">YO</div>
+          <div>
+            <strong>Your Workspace</strong>
+            <small>Local-first demo</small>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open navigation">☰</button>
+          <div>
+            <p class="eyebrow" id="viewEyebrow">YOUR DAY</p>
+            <h1 id="viewTitle">Today</h1>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <button class="search-btn" id="searchBtn">
+            <span>⌕</span>
+            <span>Search everything</span>
+            <kbd>/</kbd>
+          </button>
+          <button class="icon-btn" id="themeBtn" aria-label="Toggle theme">☼</button>
+        </div>
+      </header>
+
+      <section class="content" id="content"></section>
+    </main>
+  </div>
+
+  <div class="overlay hidden" id="overlay"></div>
+
+  <div class="command-panel hidden" id="commandPanel" role="dialog" aria-modal="true" aria-labelledby="commandTitle">
+    <div class="command-head">
+      <span>✦</span>
+      <input id="commandInput" placeholder="What do you want to remember, organize, or do?" autocomplete="off" />
+      <button class="icon-btn" id="closeCommand" aria-label="Close command bar">×</button>
+    </div>
+    <div class="command-help">
+      <p id="commandTitle">Try natural language</p>
+      <div class="suggestions">
+        <button data-suggestion="Remind me to renew my passport Friday">Remind me to renew my passport Friday</button>
+        <button data-suggestion="Add project: Plan Japan trip">Add project: Plan Japan trip</button>
+        <button data-suggestion="Save note: Call the electrician about the kitchen lights">Save note: Call the electrician</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="itemModal" role="dialog" aria-modal="true" aria-labelledby="itemModalTitle">
+    <form id="itemForm">
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow">CAPTURE</p>
+          <h2 id="itemModalTitle">Add something</h2>
+        </div>
+        <button type="button" class="icon-btn" id="closeItemModal" aria-label="Close">×</button>
+      </div>
+
+      <div class="type-grid" id="typeGrid">
+        <button type="button" class="type-chip active" data-type="task">✓ Task</button>
+        <button type="button" class="type-chip" data-type="note">≡ Note</button>
+        <button type="button" class="type-chip" data-type="event">□ Event</button>
+        <button type="button" class="type-chip" data-type="bookmark">↗ Bookmark</button>
+        <button type="button" class="type-chip" data-type="project">▣ Project</button>
+        <button type="button" class="type-chip" data-type="goal">△ Goal</button>
+      </div>
+
+      <label>
+        Title
+        <input id="itemTitle" name="title" placeholder="What is it?" required />
+      </label>
+
+      <label>
+        Details
+        <textarea id="itemDetails" name="details" rows="4" placeholder="Optional notes, context, or a URL"></textarea>
+      </label>
+
+      <div class="form-row">
+        <label>
+          Space
+          <select id="itemSpace" name="space"></select>
+        </label>
+        <label>
+          Date
+          <input id="itemDate" name="date" type="date" />
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="secondary-btn" id="cancelItem">Cancel</button>
+        <button type="submit" class="primary-btn">Save item</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="toast hidden" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
