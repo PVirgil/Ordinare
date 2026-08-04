@@ -1084,3 +1084,25 @@ textarea { resize: vertical; }
     caret-color: #ffffff !important;
   }
 }
+
+
+/* Tablet/mobile: keep Space and Date columns exactly equal width. */
+@media (max-width: 1300px) {
+  .form-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  }
+
+  .form-row > label {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  #itemSpace,
+  #itemDate {
+    display: block;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
