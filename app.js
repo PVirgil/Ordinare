@@ -575,6 +575,24 @@ function interpretCommand(raw) {
   showToast(`${type[0].toUpperCase() + type.slice(1)} added`);
 }
 
+
+function syncSpaceHeightToDate() {
+  const space = document.getElementById("itemSpace");
+  const date = document.getElementById("itemDate");
+  if (!space || !date) return;
+
+  if (window.matchMedia("(max-width: 1300px)").matches) {
+    const dateHeight = date.getBoundingClientRect().height;
+    if (dateHeight > 0) {
+      space.style.height = `${dateHeight}px`;
+      space.style.minHeight = `${dateHeight}px`;
+    }
+  } else {
+    space.style.height = "";
+    space.style.minHeight = "";
+  }
+}
+
 function openItemModal(type = "task") {
   selectedType = type;
   els.overlay.classList.remove("hidden");
@@ -582,7 +600,11 @@ function openItemModal(type = "task") {
   els.itemForm.reset();
   els.itemDate.value = "";
   updateTypeChips();
-  setTimeout(() => els.itemTitle.focus(), 30);
+  requestAnimationFrame(syncSpaceHeightToDate);
+  setTimeout(() => {
+    syncSpaceHeightToDate();
+    els.itemTitle.focus();
+  }, 30);
 }
 
 function closeItemModal() {
@@ -750,3 +772,5 @@ if (localStorage.getItem(THEME_KEY) === "dark") {
 renderSpaces();
 updateNavCounts();
 renderToday();
+
+window.addEventListener("resize", syncSpaceHeightToDate);
