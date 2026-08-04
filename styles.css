@@ -1004,3 +1004,39 @@ textarea { resize: vertical; }
     background: rgba(2, 6, 23, .18);
   }
 }
+
+
+/* Operational mobile navigation */
+@media (max-width: 760px) {
+  .sidebar {
+    z-index: 1001;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .overlay {
+    z-index: 1000;
+  }
+
+  body.sidebar-open {
+    overflow: hidden;
+    touch-action: none;
+  }
+
+  body.sidebar-open .sidebar {
+    touch-action: pan-y;
+  }
+
+  .sidebar .nav-item,
+  .sidebar .brand,
+  .sidebar .new-item-btn,
+  .sidebar .tiny-btn,
+  .sidebar .icon-btn {
+    position: relative;
+    z-index: 1;
+    pointer-events: auto;
+    touch-action: manipulation;
+  }
+}
+
