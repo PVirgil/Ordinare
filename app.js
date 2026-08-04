@@ -225,7 +225,7 @@ function renderToday() {
     </div>
   `;
 
-  document.getElementById("heroCommand")?.addEventListener("click", openCommand);
+  document.getElementById("heroCommand")?.addEventListener("click",()=>{els.sidebar.classList.remove("open");document.body.classList.remove("sidebar-open");els.overlay.classList.add("hidden");openCommand();});
   bindItemActions();
   document.querySelector("[data-jump='inbox']")?.addEventListener("click", renderInbox);
 }
@@ -626,8 +626,8 @@ document.querySelectorAll(".nav-item[data-view], .brand").forEach(btn => {
   });
 });
 
-document.getElementById("newItemBtn").addEventListener("click", () => openItemModal());
-document.getElementById("searchBtn").addEventListener("click", openCommand);
+document.getElementById("newItemBtn").addEventListener("click",()=>{els.sidebar.classList.remove("open");document.body.classList.remove("sidebar-open");els.overlay.classList.add("hidden");openItemModal();});
+document.getElementById("searchBtn").addEventListener("click",()=>{els.sidebar.classList.remove("open");document.body.classList.remove("sidebar-open");els.overlay.classList.add("hidden");openCommand();});
 document.getElementById("closeCommand").addEventListener("click", closeCommand);
 document.getElementById("closeItemModal").addEventListener("click", closeItemModal);
 document.getElementById("cancelItem").addEventListener("click", closeItemModal);
