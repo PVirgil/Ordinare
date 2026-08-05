@@ -1137,3 +1137,48 @@ textarea { resize: vertical; }
     min-height: 100dvh;
   }
 }
+
+
+/* Final tablet/mobile sidebar + tablet nav cleanup */
+@media (max-width: 1300px) {
+  .sidebar {
+    top: 0;
+    min-height: 100vh !important;
+    min-height: 100svh !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    box-sizing: border-box;
+  }
+}
+
+/* Tablet only — portrait and landscape.
+   Prevent touch/focus rendering from adding purple lines above/below nav items. */
+@media (min-width: 600px) and (max-width: 1300px) and (pointer: coarse) {
+  .sidebar .nav-item,
+  .sidebar .nav-item:hover,
+  .sidebar .nav-item:focus,
+  .sidebar .nav-item:focus-visible,
+  .sidebar .nav-item:active {
+    border: 0 !important;
+    border-top: 0 !important;
+    border-bottom: 0 !important;
+    outline: 0 !important;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .sidebar .nav-item:not(.active),
+  .sidebar .nav-item:not(.active):hover,
+  .sidebar .nav-item:not(.active):focus,
+  .sidebar .nav-item:not(.active):focus-visible,
+  .sidebar .nav-item:not(.active):active {
+    box-shadow: none !important;
+  }
+
+  .sidebar .nav-item.active,
+  .sidebar .nav-item.active:hover,
+  .sidebar .nav-item.active:focus,
+  .sidebar .nav-item.active:focus-visible,
+  .sidebar .nav-item.active:active {
+    box-shadow: inset 3px 0 0 var(--accent) !important;
+  }
+}
