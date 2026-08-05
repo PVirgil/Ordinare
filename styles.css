@@ -1246,11 +1246,10 @@ textarea { resize: vertical; }
 
 
 /* =========================================================
-   FINAL TABLET CORRECTION
-   Keeps the sidebar in the layout on tablet so the main site
-   is NOT compressed by a fixed sidebar, while still using the
-   full dynamic viewport height in portrait and landscape.
+   FINAL RESPONSIVE FIX
    ========================================================= */
+
+/* Tablet: keep sidebar in the page grid and full viewport height. */
 @media (min-width: 761px) and (max-width: 1300px) {
   .app-shell {
     display: grid !important;
@@ -1270,7 +1269,6 @@ textarea { resize: vertical; }
     min-height: 100dvh !important;
     max-height: 100dvh !important;
     transform: none !important;
-    box-shadow: none !important;
     align-self: start !important;
     overflow-y: auto !important;
     box-sizing: border-box !important;
@@ -1282,8 +1280,7 @@ textarea { resize: vertical; }
   }
 }
 
-/* Phone / narrow tablet drawer: full viewport height without
-   affecting the width or positioning of the page behind it. */
+/* Mobile drawer. */
 @media (max-width: 760px) {
   .app-shell {
     display: block !important;
@@ -1308,37 +1305,36 @@ textarea { resize: vertical; }
     width: 100% !important;
     min-width: 0 !important;
   }
-}
 
-/* Add Something — make the actual #itemSpace selected text visible.
-   Explicit values are used instead of currentColor because iPad/iOS
-   can render native select text incorrectly when height is forced. */
-@media (max-width: 1300px) {
+  /*
+    iOS/mobile native SELECT fix:
+    Do NOT force -webkit-text-fill-color/background/line-height here.
+    Restoring native select appearance makes the selected Space label render.
+  */
   #itemSpace {
     display: block !important;
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
-    color: var(--text) !important;
-    -webkit-text-fill-color: var(--text) !important;
+    box-sizing: border-box !important;
+
+    -webkit-appearance: menulist !important;
+    appearance: auto !important;
+
+    color: #111827 !important;
+    -webkit-text-fill-color: #111827 !important;
     opacity: 1 !important;
     visibility: visible !important;
-    font: inherit !important;
-    line-height: normal !important;
+
+    font-family: inherit !important;
+    font-size: 16px !important;
+    font-weight: 400 !important;
     text-indent: 0 !important;
-    background-color: var(--panel-soft) !important;
   }
 
   #itemSpace option {
-    color: var(--text) !important;
-    -webkit-text-fill-color: var(--text) !important;
-    background: var(--panel) !important;
-    opacity: 1 !important;
-  }
-
-  #itemSpace:disabled {
-    color: var(--muted) !important;
-    -webkit-text-fill-color: var(--muted) !important;
+    color: #111827 !important;
+    background-color: #ffffff !important;
     opacity: 1 !important;
   }
 
