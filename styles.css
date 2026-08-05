@@ -1128,7 +1128,7 @@ textarea { resize: vertical; }
   }
 }
 
-@media (max-width: 1300px) {
+@media (max-width: 760px) {
   .sidebar {
     top: 0;
     bottom: 0;
@@ -1180,5 +1180,66 @@ textarea { resize: vertical; }
   .sidebar .nav-item.active:focus-visible,
   .sidebar .nav-item.active:active {
     box-shadow: inset 3px 0 0 var(--accent) !important;
+  }
+}
+
+
+/* Landscape-tablet sidebar height hard fix */
+@media (max-width: 1300px) {
+  html,
+  body {
+    min-height: 100%;
+  }
+
+  .sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+    max-height: none !important;
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+}
+
+/* Explicit tablet landscape coverage */
+@media (min-width: 600px) and (max-width: 1300px) and (orientation: landscape) {
+  .sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+  }
+}
+
+/* Make the Space control text visible on tablet/mobile.
+   Keep inherited typography but prevent transparent/hidden select text. */
+@media (max-width: 1300px) {
+  #space,
+  #spaceSelect,
+  select[name="space"],
+  .space-select,
+  .space-box select,
+  .space-field select,
+  .add-something select {
+    opacity: 1 !important;
+    visibility: visible !important;
+    -webkit-text-fill-color: currentColor !important;
+  }
+
+  #space option,
+  #spaceSelect option,
+  select[name="space"] option,
+  .space-select option,
+  .space-box select option,
+  .space-field select option,
+  .add-something select option {
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 }
