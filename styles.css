@@ -1161,7 +1161,7 @@ textarea { resize: vertical; }
 /* Mobile only — keep Date inside the Add Something card */
 @media (max-width: 760px) {
   #itemDate {
-    width: 80% !important;
+    width: 99% !important;
     max-width: 100% !important;
     min-width: 0 !important;
     box-sizing: border-box !important;
