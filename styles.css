@@ -1243,3 +1243,109 @@ textarea { resize: vertical; }
     visibility: visible !important;
   }
 }
+
+
+/* =========================================================
+   FINAL TABLET CORRECTION
+   Keeps the sidebar in the layout on tablet so the main site
+   is NOT compressed by a fixed sidebar, while still using the
+   full dynamic viewport height in portrait and landscape.
+   ========================================================= */
+@media (min-width: 761px) and (max-width: 1300px) {
+  .app-shell {
+    display: grid !important;
+    grid-template-columns: 220px minmax(0, 1fr) !important;
+    width: 100% !important;
+  }
+
+  .sidebar {
+    position: sticky !important;
+    top: 0 !important;
+    bottom: auto !important;
+    left: auto !important;
+    width: auto !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+    max-height: 100dvh !important;
+    transform: none !important;
+    box-shadow: none !important;
+    align-self: start !important;
+    overflow-y: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  .main {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}
+
+/* Phone / narrow tablet drawer: full viewport height without
+   affecting the width or positioning of the page behind it. */
+@media (max-width: 760px) {
+  .app-shell {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: min(300px, 88vw) !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+    max-height: 100dvh !important;
+    box-sizing: border-box !important;
+  }
+
+  .main {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}
+
+/* Add Something — make the actual #itemSpace selected text visible.
+   Explicit values are used instead of currentColor because iPad/iOS
+   can render native select text incorrectly when height is forced. */
+@media (max-width: 1300px) {
+  #itemSpace {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    color: var(--text) !important;
+    -webkit-text-fill-color: var(--text) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    font: inherit !important;
+    line-height: normal !important;
+    text-indent: 0 !important;
+    background-color: var(--panel-soft) !important;
+  }
+
+  #itemSpace option {
+    color: var(--text) !important;
+    -webkit-text-fill-color: var(--text) !important;
+    background: var(--panel) !important;
+    opacity: 1 !important;
+  }
+
+  #itemSpace:disabled {
+    color: var(--muted) !important;
+    -webkit-text-fill-color: var(--muted) !important;
+    opacity: 1 !important;
+  }
+
+  #itemDate {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+}
