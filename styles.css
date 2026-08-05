@@ -1109,3 +1109,33 @@ textarea { resize: vertical; }
     box-sizing: border-box !important;
   }
 }
+
+
+/* MOBILE SPACE TEXT VISIBILITY — no sizing/layout changes */
+@media (max-width: 760px) {
+  #itemSpace {
+    color: #111 !important;
+    -webkit-text-fill-color: #111 !important;
+    opacity: 1 !important;
+  }
+
+  #itemSpace option,
+  #itemSpace optgroup {
+    color: #111 !important;
+    -webkit-text-fill-color: #111 !important;
+    background-color: #fff !important;
+    opacity: 1 !important;
+  }
+
+  body.dark #itemSpace {
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+  }
+
+  body.dark #itemSpace option,
+  body.dark #itemSpace optgroup {
+    color: #111 !important;
+    -webkit-text-fill-color: #111 !important;
+    background-color: #fff !important;
+  }
+}
