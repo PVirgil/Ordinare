@@ -1157,3 +1157,17 @@ textarea { resize: vertical; }
     background-color: #fff !important;
   }
 }
+
+/* Mobile only — keep Date inside the Add Something card */
+@media (max-width: 760px) {
+  #itemDate {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .form-row > label {
+    min-width: 0;
+  }
+}
