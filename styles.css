@@ -1060,15 +1060,58 @@ textarea { resize: vertical; }
 
 
 
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   Add Something sizing fix — preserve natural control sizes
+   ========================================================= */
+
+/* Tablet portrait + landscape:
+   Equal columns that are actually allowed to shrink inside the modal.
+   This fixes the Date overflow without forcing either control narrower. */
+@media (min-width: 761px) and (max-width: 1300px) {
+  .form-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  }
+
+  .form-row > label {
+    min-width: 0 !important;
+  }
+}
+
+
+
+
+
+
+/* Landscape tablet sidebar: fill the entire grid/page height.
+   Do not use a fixed 100vh height here — that stops the sidebar
+   background at one viewport when the page/grid is taller. */
+@media (min-width: 761px) and (max-width: 1300px) and (orientation: landscape) {
+  .app-shell {
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+  }
+
+  .sidebar {
+    height: auto !important;
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+    align-self: stretch !important;
+    top: 0 !important;
+    box-sizing: border-box !important;
+  }
+}
+
 /* Tablet/mobile Add Something sizing + caret colors */
 @media (max-width: 1300px) {
-  #itemSpace,
-  #itemDate {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    box-sizing: border-box;
-  }
 
   input,
   textarea,
@@ -1086,12 +1129,31 @@ textarea { resize: vertical; }
 }
 
 
-
-
-
-/* Restore the original mobile Add Something layout: one field per row. */
+/* MOBILE SPACE TEXT VISIBILITY — no sizing/layout changes */
 @media (max-width: 760px) {
-  .form-row {
-    grid-template-columns: 1fr !important;
+  #itemSpace {
+    color: #111 !important;
+    -webkit-text-fill-color: #111 !important;
+    opacity: 1 !important;
+  }
+
+  #itemSpace option,
+  #itemSpace optgroup {
+    color: #111 !important;
+    -webkit-text-fill-color: #111 !important;
+    background-color: #fff !important;
+    opacity: 1 !important;
+  }
+
+  body.dark #itemSpace {
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+  }
+
+  body.dark #itemSpace option,
+  body.dark #itemSpace optgroup {
+    color: #111 !important;
+    -webkit-text-fill-color: #111 !important;
+    background-color: #fff !important;
   }
 }
