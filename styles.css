@@ -1060,72 +1060,58 @@ textarea { resize: vertical; }
 
 
 
-/* Tablet/mobile caret colors */
-@media (max-width: 1300px) {
-  input,
-  textarea,
-  select,
-  .command-head input {
-    caret-color: #000000 !important;
-  }
-
-  body.dark input,
-  body.dark textarea,
-  body.dark select,
-  body.dark .command-head input {
-    caret-color: #ffffff !important;
-  }
-}
 
 
 
 
 
-/* Restore the original mobile Add Something layout: one field per row. */
-@media (max-width: 760px) {
-  .form-row {
-    grid-template-columns: 1fr !important;
-  }
-}
+
+
 
 
 /* =========================================================
-   Targeted responsive fixes only
+   Add Something sizing fix — preserve natural control sizes
    ========================================================= */
 
-/* Tablets (portrait + landscape): retain the existing constrained
-   Space/Date behavior. This does NOT apply to phones. */
+/* Tablet portrait + landscape:
+   Equal columns that are actually allowed to shrink inside the modal.
+   This fixes the Date overflow without forcing either control narrower. */
 @media (min-width: 761px) and (max-width: 1300px) {
-  #itemSpace,
-  #itemDate {
-    width: 100% !important;
-    max-width: 100% !important;
+  .form-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  }
+
+  .form-row > label {
     min-width: 0 !important;
-    box-sizing: border-box !important;
   }
 }
 
-/* Phones: leave Space completely at its original sizing.
-   Only prevent Date from overflowing the Add Something card. */
+/* Mobile:
+   Keep the original one-field-per-row layout.
+   Only allow the grid item to shrink so the native Date input cannot
+   push beyond the Add Something card. Space keeps its original styling. */
 @media (max-width: 760px) {
+  .form-row {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .form-row > label {
+    min-width: 0 !important;
+  }
+
   #itemDate {
     max-width: 100% !important;
     min-width: 0 !important;
-    box-sizing: border-box !important;
   }
 }
 
-/* Landscape tablet only: make the existing sticky sidebar reach
-   the bottom without making it fixed or changing the page layout. */
+/* Landscape tablet:
+   Keep the original sticky sidebar/layout, but use the real dynamic
+   viewport height so it reaches the bottom in landscape browser chrome. */
 @media (min-width: 761px) and (max-width: 1300px) and (orientation: landscape) {
   .sidebar {
     height: 100vh !important;
     height: 100dvh !important;
-    min-height: 100vh !important;
     min-height: 100dvh !important;
-    max-height: 100dvh !important;
-    align-self: start !important;
-    overflow-y: auto !important;
-    box-sizing: border-box !important;
   }
 }
