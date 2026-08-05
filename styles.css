@@ -1060,16 +1060,8 @@ textarea { resize: vertical; }
 
 
 
-/* Tablet/mobile Add Something sizing + caret colors */
+/* Tablet/mobile caret colors */
 @media (max-width: 1300px) {
-  #itemSpace,
-  #itemDate {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    box-sizing: border-box;
-  }
-
   input,
   textarea,
   select,
@@ -1093,5 +1085,47 @@ textarea { resize: vertical; }
 @media (max-width: 760px) {
   .form-row {
     grid-template-columns: 1fr !important;
+  }
+}
+
+
+/* =========================================================
+   Targeted responsive fixes only
+   ========================================================= */
+
+/* Tablets (portrait + landscape): retain the existing constrained
+   Space/Date behavior. This does NOT apply to phones. */
+@media (min-width: 761px) and (max-width: 1300px) {
+  #itemSpace,
+  #itemDate {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* Phones: leave Space completely at its original sizing.
+   Only prevent Date from overflowing the Add Something card. */
+@media (max-width: 760px) {
+  #itemDate {
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* Landscape tablet only: make the existing sticky sidebar reach
+   the bottom without making it fixed or changing the page layout. */
+@media (min-width: 761px) and (max-width: 1300px) and (orientation: landscape) {
+  .sidebar {
+    height: 100vh !important;
+    height: 100dvh !important;
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+    max-height: 100dvh !important;
+    align-self: start !important;
+    overflow-y: auto !important;
+    box-sizing: border-box !important;
   }
 }
