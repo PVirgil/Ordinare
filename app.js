@@ -225,7 +225,13 @@ function renderToday() {
     </div>
   `;
 
-  document.getElementById("heroCommand")?.addEventListener("click",()=>{els.sidebar.classList.remove("open");document.body.classList.remove("sidebar-open");els.overlay.classList.add("hidden");openCommand();});
+  document.getElementById("heroCommand")?.addEventListener("click",()=>{
+    els.sidebar.classList.remove("open");
+    document.body.classList.remove("sidebar-open");
+    els.overlay.classList.add("hidden");
+    openCommand();
+  });
+
   bindItemActions();
   document.querySelector("[data-jump='inbox']")?.addEventListener("click", renderInbox);
 }
@@ -254,6 +260,7 @@ function renderProjects() {
   currentView = "projects";
   setView("Projects", "OUTCOMES");
   const projects = state.items.filter(i => i.type === "project");
+
   els.content.innerHTML = `
     <section class="panel">
       <div class="panel-head">
@@ -273,14 +280,22 @@ function renderProjects() {
       </div>
     </section>
   `;
+
   document.getElementById("addProjectBtn")?.addEventListener("click", () => openItemModal("project"));
 }
 
 function renderCalendar() {
   currentView = "calendar";
   setView("Calendar", "TIME");
-  const dated = state.items.filter(i => i.date).sort((a,b) => a.date.localeCompare(b.date));
-  renderCollection("Calendar", "Everything with a date, in one chronological view.", dated);
+  const dated = state.items
+    .filter(i => i.date)
+    .sort((a,b) => a.date.localeCompare(b.date));
+
+  renderCollection(
+    "Calendar",
+    "Everything with a date, in one chronological view.",
+    dated
+  );
 }
 
 function renderPeople() {
@@ -288,6 +303,7 @@ function renderPeople() {
   setView("People", "RELATIONSHIPS");
 
   const people = state.people || [];
+
   els.content.innerHTML = `
     <section class="panel">
       <div class="panel-head">
@@ -312,97 +328,176 @@ function renderPeople() {
             <div class="person-details">
               ${person.phone ? `<div><span>Phone</span><a href="tel:${escapeHtml(person.phone)}">${escapeHtml(person.phone)}</a></div>` : ""}
               ${person.email ? `<div><span>Email</span><a href="mailto:${escapeHtml(person.email)}">${escapeHtml(person.email)}</a></div>` : ""}
-              ${person.notes ? `<div class="person-notes"><span>Notes</span><p>${escapeHtml(person.notes)}</p></div>` : ""}
+              ${person.notes ? `<div><span>Notes</span><p>${escapeHtml(person.notes)}</p></div>` : ""}
             </div>
           </article>
-        `).join("") : `
-          <div class="empty-state people-empty">
-            <strong>No people added yet</strong>
-            Add family, friends, coworkers, clients, or anyone else you want to remember.
-          </div>
-        `}
+        `).join("") : emptyState("No people yet", "Add someone you want to remember or stay connected with.")}
       </div>
     </section>
-
-    <div class="inline-person-form hidden" id="personFormWrap">
-      <form id="personForm">
-        <div class="modal-head">
-          <div>
-            <p class="eyebrow">NEW CONTACT</p>
-            <h2>Add a person</h2>
-          </div>
-          <button type="button" class="icon-btn" id="closePersonForm" aria-label="Close">×</button>
-        </div>
-
-        <label>
-          Name
-          <input id="personName" required placeholder="e.g. Jordan Smith" />
-        </label>
-
-        <div class="form-row">
-          <label>
-            Phone
-            <input id="personPhone" type="tel" placeholder="(555) 123-4567" />
-          </label>
-          <label>
-            Email
-            <input id="personEmail" type="email" placeholder="jordan@example.com" />
-          </label>
-        </div>
-
-        <label>
-          Relationship
-          <input id="personRelationship" placeholder="Friend, sibling, coworker, client..." />
-        </label>
-
-        <label>
-          Notes
-          <textarea id="personNotes" rows="3" placeholder="Birthday, how you met, things to remember..."></textarea>
-        </label>
-
-        <div class="modal-actions">
-          <button type="button" class="secondary-btn" id="cancelPerson">Cancel</button>
-          <button type="submit" class="primary-btn">Save person</button>
-        </div>
-      </form>
-    </div>
   `;
 
-  const wrap = document.getElementById("personFormWrap");
-  const openForm = () => {
-    wrap.classList.remove("hidden");
-    setTimeout(() => document.getElementById("personName")?.focus(), 30);
-  };
-  const closeForm = () => wrap.classList.add("hidden");
+  document.getElementById("addPersonBtn")?.addEventListener("click", openPersonModal);
+  bindPersonActions();
+}
 
-  document.getElementById("addPersonBtn")?.addEventListener("click", openForm);
-  document.getElementById("closePersonForm")?.addEventListener("click", closeForm);
-  document.getElementById("cancelPerson")?.addEventListener("click", closeForm);
+function renderGoals() {
+  currentView = "goals";
+  setView("Goals", "DIRECTION");
 
-  document.getElementById("personForm")?.addEventListener("submit", e => {
-    e.preventDefault();
-    const name = document.getElementById("personName").value.trim();
-    if (!name) return;
+  const goals = state.items.filter(i => i.type === "goal");
 
-    state.people.unshift({
-      id: crypto.randomUUID(),
-      name,
-      phone: document.getElementById("personPhone").value.trim(),
-      email: document.getElementById("personEmail").value.trim(),
-      relationship: document.getElementById("personRelationship").value.trim(),
-      notes: document.getElementById("personNotes").value.trim(),
-      createdAt: Date.now()
+  els.content.innerHTML = `
+    <section class="panel">
+      <div class="panel-head">
+        <div><h3>Goals</h3><p>Longer-term outcomes worth keeping visible.</p></div>
+        <button class="primary-btn" id="addGoalBtn">＋ Add goal</button>
+      </div>
+      <div class="view-grid">
+        ${goals.length ? goals.map(g => `
+          <article class="collection-card">
+            <span class="badge">${escapeHtml(spaceName(g.space))}</span>
+            <h3>${escapeHtml(g.title)}</h3>
+            <p>${escapeHtml(g.details || "No goal notes yet.")}</p>
+          </article>
+        `).join("") : emptyState("No goals yet", "Add a goal to keep your direction visible.")}
+      </div>
+    </section>
+  `;
+
+  document.getElementById("addGoalBtn")?.addEventListener("click", () => openItemModal("goal"));
+}
+
+function renderSpace(spaceId) {
+  currentView = `space:${spaceId}`;
+  const space = state.spaces.find(s => s.id === spaceId);
+  if (!space) return renderToday();
+
+  setView(space.name, "SPACE");
+
+  renderCollection(
+    space.name,
+    `Everything connected to ${space.name}.`,
+    state.items.filter(i => i.space === spaceId)
+  );
+}
+
+function renderCollection(title, description, items) {
+  els.content.innerHTML = `
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h3>${escapeHtml(title)}</h3>
+          <p>${escapeHtml(description)}</p>
+        </div>
+        <button class="primary-btn" id="collectionAddBtn">＋ Add something</button>
+      </div>
+
+      <div class="item-list">
+        ${items.length
+          ? items.map(itemRow).join("")
+          : emptyState("Nothing here yet", "Add something and it will appear here.")}
+      </div>
+    </section>
+  `;
+
+  document.getElementById("collectionAddBtn")?.addEventListener("click", () => openItemModal("task"));
+  bindItemActions();
+}
+
+function emptyState(title, text) {
+  return `
+    <div class="empty-state">
+      <strong>${escapeHtml(title)}</strong>
+      <p>${escapeHtml(text)}</p>
+    </div>
+  `;
+}
+
+function getDayPart() {
+  const hour = new Date().getHours();
+  if (hour < 12) return "morning";
+  if (hour < 18) return "afternoon";
+  return "evening";
+}
+
+function bindItemActions() {
+  document.querySelectorAll("[data-action]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const row = btn.closest("[data-id]");
+      if (!row) return;
+
+      const item = state.items.find(i => i.id === row.dataset.id);
+      if (!item) return;
+
+      if (btn.dataset.action === "toggle") {
+        item.done = !item.done;
+      }
+
+      if (btn.dataset.action === "delete") {
+        state.items = state.items.filter(i => i.id !== item.id);
+      }
+
+      saveState();
+      renderCurrent();
     });
+  });
+}
 
-    saveState();
-    renderPeople();
-    showToast("Person added");
+function renderCurrent() {
+  if (currentView === "today") return renderToday();
+  if (currentView === "inbox") return renderInbox();
+  if (currentView === "projects") return renderProjects();
+  if (currentView === "calendar") return renderCalendar();
+  if (currentView === "library") return renderLibrary();
+  if (currentView === "people") return renderPeople();
+  if (currentView === "goals") return renderGoals();
+
+  if (currentView.startsWith("space:")) {
+    return renderSpace(currentView.split(":")[1]);
+  }
+
+  renderToday();
+}
+
+function getInitials(name = "") {
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map(part => part[0]?.toUpperCase() || "")
+    .join("");
+}
+
+function openPersonModal() {
+  const name = prompt("Name");
+  if (!name?.trim()) return;
+
+  const relationship = prompt("Relationship", "Contact") || "Contact";
+  const phone = prompt("Phone", "") || "";
+  const email = prompt("Email", "") || "";
+  const notes = prompt("Notes", "") || "";
+
+  state.people.unshift({
+    id: crypto.randomUUID(),
+    name: name.trim(),
+    relationship: relationship.trim(),
+    phone: phone.trim(),
+    email: email.trim(),
+    notes: notes.trim(),
+    createdAt: Date.now()
   });
 
+  saveState();
+  renderPeople();
+  showToast("Person added");
+}
+
+function bindPersonActions() {
   document.querySelectorAll("[data-person-action='delete']").forEach(btn => {
     btn.addEventListener("click", () => {
       const card = btn.closest("[data-person-id]");
       if (!card) return;
+
       state.people = state.people.filter(person => person.id !== card.dataset.personId);
       saveState();
       renderPeople();
@@ -411,150 +506,41 @@ function renderPeople() {
   });
 }
 
-function getInitials(name = "") {
-  return name
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map(part => part[0] || "")
-    .join("")
-    .toUpperCase() || "?";
-}
-
-function renderGoals() {
-  currentView = "goals";
-  setView("Goals", "DIRECTION");
-  const goals = state.items.filter(i => i.type === "goal");
-  renderCollection("Goals", "Long-term outcomes connected to the work that advances them.", goals);
-}
-
-function renderCollection(title, subtitle, items) {
-  els.content.innerHTML = `
-    <section class="panel">
-      <div class="panel-head">
-        <div><h3>${escapeHtml(title)}</h3><p>${escapeHtml(subtitle)}</p></div>
-        <button class="primary-btn" id="collectionAddBtn">＋ Add</button>
-      </div>
-      <div class="item-list">
-        ${items.length ? items.map(itemRow).join("") : emptyState(`No ${title.toLowerCase()} items`, "Use New item to add something.")}
-      </div>
-    </section>
-  `;
-  bindItemActions();
-  document.getElementById("collectionAddBtn")?.addEventListener("click", () => openItemModal());
-}
-
-function renderSpace(spaceId) {
-  const space = state.spaces.find(s => s.id === spaceId);
-  if (!space) return;
-  currentView = `space:${spaceId}`;
-  els.viewTitle.textContent = space.name;
-  els.viewEyebrow.textContent = "SPACE";
-  document.querySelectorAll(".nav-item[data-view]").forEach(btn => btn.classList.remove("active"));
-  renderCollection(space.name, `Everything connected to your ${space.name.toLowerCase()} space.`, state.items.filter(i => i.space === spaceId));
-  if (window.innerWidth <= 760) {
-    els.sidebar.classList.remove("open");
-    document.body.classList.remove("sidebar-open");
-  }
-}
-
-function emptyState(title, text) {
-  return `<div class="empty-state"><strong>${escapeHtml(title)}</strong>${escapeHtml(text)}</div>`;
-}
-
-function getDayPart() {
-  const h = new Date().getHours();
-  if (h < 12) return "morning";
-  if (h < 18) return "afternoon";
-  return "evening";
-}
-
-function bindItemActions() {
-  document.querySelectorAll(".item-row").forEach(row => {
-    row.querySelector("[data-action='toggle']")?.addEventListener("click", () => {
-      const item = state.items.find(i => i.id === row.dataset.id);
-      if (!item) return;
-      item.done = !item.done;
-      saveState();
-      renderCurrent();
-    });
-    row.querySelector("[data-action='delete']")?.addEventListener("click", () => {
-      state.items = state.items.filter(i => i.id !== row.dataset.id);
-      saveState();
-      renderCurrent();
-      showToast("Item deleted");
-    });
-  });
-}
-
-
-function closeSidebarAfterNavigation() {
-  els.sidebar.classList.remove("open");
-  document.body.classList.remove("sidebar-open");
-
-  if (
-    els.commandPanel.classList.contains("hidden") &&
-    els.itemModal.classList.contains("hidden")
-  ) {
-    els.overlay.classList.add("hidden");
-  }
-}
-
-function renderCurrent() {
-  if (currentView.startsWith("space:")) return renderSpace(currentView.split(":")[1]);
-  ({
-    today: renderToday,
-    inbox: renderInbox,
-    projects: renderProjects,
-    calendar: renderCalendar,
-    library: renderLibrary,
-    people: renderPeople,
-    goals: renderGoals
-  }[currentView] || renderToday)();
-}
-
 function openCommand() {
   els.overlay.classList.remove("hidden");
   els.commandPanel.classList.remove("hidden");
-  els.commandInput.value = "";
   setTimeout(() => els.commandInput.focus(), 30);
 }
 
 function closeCommand() {
   els.commandPanel.classList.add("hidden");
-  if (els.itemModal.classList.contains("hidden")) els.overlay.classList.add("hidden");
+  if (els.itemModal.classList.contains("hidden")) {
+    els.overlay.classList.add("hidden");
+  }
 }
 
-function interpretCommand(raw) {
-  const text = raw.trim();
-  if (!text) return;
-  const lower = text.toLowerCase();
+function interpretCommand(value) {
+  const raw = value.trim();
+  if (!raw) return;
+
+  const lower = raw.toLowerCase();
 
   let type = "task";
-  let title = text;
+  if (lower.startsWith("note ")) type = "note";
+  if (lower.startsWith("event ")) type = "event";
+  if (lower.startsWith("bookmark ")) type = "bookmark";
+  if (lower.startsWith("project ")) type = "project";
+  if (lower.startsWith("goal ")) type = "goal";
 
-  if (lower.startsWith("add project:")) {
-    type = "project";
-    title = text.split(":").slice(1).join(":").trim();
-  } else if (lower.startsWith("save note:")) {
-    type = "note";
-    title = text.split(":").slice(1).join(":").trim();
-  } else if (lower.includes("remind me")) {
-    type = "task";
-    title = text.replace(/remind me to/i, "").trim();
-  } else if (lower.startsWith("goal:")) {
-    type = "goal";
-    title = text.split(":").slice(1).join(":").trim();
-  }
-
+  let title = raw.replace(/^(note|event|bookmark|project|goal|task)\s+/i, "").trim();
   let date = "";
-  if (lower.includes("today")) date = getToday();
-  if (lower.includes("tomorrow")) date = addDays(1);
-  if (lower.includes("friday")) {
-    const d = new Date();
-    const delta = (5 - d.getDay() + 7) % 7 || 7;
-    d.setDate(d.getDate() + delta);
-    date = d.toISOString().slice(0,10);
+
+  if (/\btoday\b/i.test(title)) {
+    date = getToday();
+    title = title.replace(/\btoday\b/i, "").trim();
+  } else if (/\btomorrow\b/i.test(title)) {
+    date = addDays(1);
+    title = title.replace(/\btomorrow\b/i, "").trim();
   }
 
   state.items.unshift({
@@ -575,15 +561,25 @@ function interpretCommand(raw) {
   showToast(`${type[0].toUpperCase() + type.slice(1)} added`);
 }
 
+/*
+  IMPORTANT:
+  These two sync functions intentionally run on TABLETS ONLY.
 
+  Previously they ran at every width <= 1300px, which meant mobile
+  Safari was being given an inline height on the native Space <select>.
+  That can clip/hide the selected option text.
+
+  Mobile now receives NO inline Space height and NO inline Date width.
+*/
 
 function syncDateWidthToSpace() {
   const space = document.getElementById("itemSpace");
   const date = document.getElementById("itemDate");
   if (!space || !date) return;
 
-  if (window.matchMedia("(max-width: 1300px)").matches) {
+  if (window.matchMedia("(min-width: 761px) and (max-width: 1300px)").matches) {
     const spaceWidth = space.getBoundingClientRect().width;
+
     if (spaceWidth > 0) {
       date.style.width = `${spaceWidth}px`;
       date.style.maxWidth = `${spaceWidth}px`;
@@ -601,13 +597,19 @@ function syncSpaceHeightToDate() {
   const date = document.getElementById("itemDate");
   if (!space || !date) return;
 
-  if (window.matchMedia("(max-width: 1300px)").matches) {
+  if (window.matchMedia("(min-width: 761px) and (max-width: 1300px)").matches) {
     const dateHeight = date.getBoundingClientRect().height;
+
     if (dateHeight > 0) {
       space.style.height = `${dateHeight}px`;
       space.style.minHeight = `${dateHeight}px`;
     }
   } else {
+    /*
+      This is especially important on mobile:
+      explicitly remove any inline height left behind by a resize or
+      orientation change so the native select can render normally.
+    */
     space.style.height = "";
     space.style.minHeight = "";
   }
@@ -620,7 +622,12 @@ function openItemModal(type = "task") {
   els.itemForm.reset();
   els.itemDate.value = "";
   updateTypeChips();
-  requestAnimationFrame(() => { syncSpaceHeightToDate(); syncDateWidthToSpace(); });
+
+  requestAnimationFrame(() => {
+    syncSpaceHeightToDate();
+    syncDateWidthToSpace();
+  });
+
   setTimeout(() => {
     syncSpaceHeightToDate();
     syncDateWidthToSpace();
@@ -630,7 +637,10 @@ function openItemModal(type = "task") {
 
 function closeItemModal() {
   els.itemModal.classList.add("hidden");
-  if (els.commandPanel.classList.contains("hidden")) els.overlay.classList.add("hidden");
+
+  if (els.commandPanel.classList.contains("hidden")) {
+    els.overlay.classList.add("hidden");
+  }
 }
 
 function updateTypeChips() {
@@ -652,6 +662,7 @@ document.querySelectorAll(".nav-item[data-view], .brand").forEach(btn => {
     event.stopPropagation();
 
     const view = btn.dataset.view || "today";
+
     const fn = {
       today: renderToday,
       inbox: renderInbox,
@@ -662,28 +673,21 @@ document.querySelectorAll(".nav-item[data-view], .brand").forEach(btn => {
       goals: renderGoals
     }[view];
 
-    if (fn) {
-      fn();
-      closeSidebarAfterNavigation();
-    }
+    if (fn) fn();
+
+    closeSidebarAfterNavigation();
   });
 });
 
-document.getElementById("newItemBtn").addEventListener("click", () => {
-  els.sidebar.classList.remove("open");
-  document.body.classList.remove("sidebar-open");
-  els.overlay.classList.add("hidden");
-  openItemModal();
+document.getElementById("commandBtn")?.addEventListener("click", openCommand);
+
+document.getElementById("addBtn")?.addEventListener("click", () => {
+  openItemModal("task");
 });
-document.getElementById("searchBtn").addEventListener("click", () => {
-  els.sidebar.classList.remove("open");
-  document.body.classList.remove("sidebar-open");
-  els.overlay.classList.add("hidden");
-  openCommand();
-});
-document.getElementById("closeCommand").addEventListener("click", closeCommand);
-document.getElementById("closeItemModal").addEventListener("click", closeItemModal);
-document.getElementById("cancelItem").addEventListener("click", closeItemModal);
+
+document.getElementById("closeCommand")?.addEventListener("click", closeCommand);
+
+document.getElementById("closeItemModal")?.addEventListener("click", closeItemModal);
 
 els.overlay.addEventListener("click", () => {
   closeCommand();
@@ -700,6 +704,7 @@ els.typeGrid.querySelectorAll("[data-type]").forEach(btn => {
 
 els.itemForm.addEventListener("submit", (e) => {
   e.preventDefault();
+
   state.items.unshift({
     id: crypto.randomUUID(),
     type: selectedType,
@@ -711,6 +716,7 @@ els.itemForm.addEventListener("submit", (e) => {
     progress: selectedType === "project" ? 10 : undefined,
     createdAt: Date.now()
   });
+
   saveState();
   closeItemModal();
   renderCurrent();
@@ -718,7 +724,9 @@ els.itemForm.addEventListener("submit", (e) => {
 });
 
 els.commandInput.addEventListener("keydown", e => {
-  if (e.key === "Enter") interpretCommand(els.commandInput.value);
+  if (e.key === "Enter") {
+    interpretCommand(els.commandInput.value);
+  }
 });
 
 document.querySelectorAll("[data-suggestion]").forEach(btn => {
@@ -742,58 +750,74 @@ document.getElementById("closeSidebar").addEventListener("click", event => {
 
 document.getElementById("themeBtn").addEventListener("click", () => {
   document.body.classList.toggle("dark");
-  localStorage.setItem(THEME_KEY, document.body.classList.contains("dark") ? "dark" : "light");
+
+  localStorage.setItem(
+    THEME_KEY,
+    document.body.classList.contains("dark") ? "dark" : "light"
+  );
 });
 
 document.getElementById("addSpaceBtn").addEventListener("click", () => {
-  const name = prompt("Name this space:");
+  const name = prompt("Space name");
   if (!name?.trim()) return;
-  const id = name.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-") + "-" + Math.random().toString(36).slice(2,5);
-  const palette = ["#7c3aed", "#2563eb", "#059669", "#d97706", "#db2777", "#0891b2"];
-  state.spaces.push({ id, name: name.trim(), color: palette[state.spaces.length % palette.length] });
+
+  const colors = [
+    "#7c3aed",
+    "#2563eb",
+    "#059669",
+    "#d97706",
+    "#dc2626",
+    "#0891b2"
+  ];
+
+  state.spaces.push({
+    id: crypto.randomUUID(),
+    name: name.trim(),
+    color: colors[state.spaces.length % colors.length]
+  });
+
   saveState();
   renderSpaces();
-  showToast("Space created");
+  showToast("Space added");
 });
 
-document.getElementById("settingsBtn").addEventListener("click", () => {
-  const ok = confirm("Reset this local demo back to its starter data?");
-  if (!ok) return;
-  state = structuredClone(seed);
-  saveState();
-  renderSpaces();
-  renderToday();
-  showToast("Demo reset");
-});
-
-document.addEventListener("keydown", e => {
-  const target = e.target;
-  const typing = ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName);
-
-  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
-    e.preventDefault();
-    openCommand();
-  } else if (!typing && e.key === "/") {
-    e.preventDefault();
-    openCommand();
-  } else if (!typing && e.key.toLowerCase() === "n") {
-    openItemModal();
-  } else if (e.key === "Escape") {
-    closeCommand();
-    closeItemModal();
+function closeSidebarAfterNavigation() {
+  if (window.innerWidth <= 760) {
     els.sidebar.classList.remove("open");
     document.body.classList.remove("sidebar-open");
+
+    if (
+      els.commandPanel.classList.contains("hidden") &&
+      els.itemModal.classList.contains("hidden")
+    ) {
+      els.overlay.classList.add("hidden");
+    }
+  }
+}
+
+window.addEventListener("resize", () => {
+  syncSpaceHeightToDate();
+  syncDateWidthToSpace();
+
+  if (window.innerWidth > 760) {
+    els.sidebar.classList.remove("open");
+    document.body.classList.remove("sidebar-open");
+
+    if (
+      els.commandPanel.classList.contains("hidden") &&
+      els.itemModal.classList.contains("hidden")
+    ) {
+      els.overlay.classList.add("hidden");
+    }
   }
 });
 
-if (localStorage.getItem(THEME_KEY) === "dark") {
+const savedTheme = localStorage.getItem(THEME_KEY);
+
+if (savedTheme === "dark") {
   document.body.classList.add("dark");
 }
 
 renderSpaces();
 updateNavCounts();
 renderToday();
-
-window.addEventListener("resize", syncSpaceHeightToDate);
-
-window.addEventListener("resize", syncDateWidthToSpace);
